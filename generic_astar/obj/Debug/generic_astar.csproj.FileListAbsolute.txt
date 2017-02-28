@@ -1,0 +1,6 @@
+c:\users\redun\documents\visual studio 2015\Projects\generic_astar\generic_astar\bin\Debug\generic_astar.exe.config
+C:\Users\redun\Documents\Visual Studio 2015\Projects\generic_astar\generic_astar\bin\Debug\generic_astar.exe
+C:\Users\redun\Documents\Visual Studio 2015\Projects\generic_astar\generic_astar\bin\Debug\generic_astar.pdb
+C:\Users\redun\Documents\Visual Studio 2015\Projects\generic_astar\generic_astar\obj\Debug\generic_astar.csprojResolveAssemblyReference.cache
+C:\Users\redun\Documents\Visual Studio 2015\Projects\generic_astar\generic_astar\obj\Debug\generic_astar.exe
+C:\Users\redun\Documents\Visual Studio 2015\Projects\generic_astar\generic_astar\obj\Debug\generic_astar.pdb
