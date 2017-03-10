@@ -55,7 +55,7 @@ namespace generic_astar
                 object value = current.WorldState.GetValue(x.Name);
                 if(value != null)
                 {
-                    return ((bool)value) == x.Value;
+                    return ((bool)value) != x.Value;
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace generic_astar
         }
     }
 
-    class GOAPNode : IAStarState
+    public class GOAPNode : IAStarState, ICloneable
     {
         public WorldState WorldState;
         public Action LastAction;
@@ -125,7 +125,11 @@ namespace generic_astar
         public WorldState(WorldState other)
         {
             this.Tokens = new Dictionary<string, WorldStateToken>();
-            this.Tokens.Concat(other.Tokens.Select(x => new KeyValuePair<string, WorldStateToken>(x.Key, x.Value)));
+            foreach(KeyValuePair<string, WorldStateToken> pair in other.Tokens)
+            {
+                this.Tokens.Add(pair.Key, pair.Value);
+            }
+            
         }
 
         public WorldState(Dictionary<string, WorldStateToken> tokens)
@@ -234,6 +238,7 @@ namespace generic_astar
                 this.Effect.SetToken(token);
             }
             this.Name = name;
+            this.Cost = cost;
         }
     }
 

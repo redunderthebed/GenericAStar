@@ -160,6 +160,7 @@ namespace generic_astar
             openSet.Clear();
             AStarNode startNode = new AStarNode(start, goal, 0, map);
             startNode.Goal = goal;
+            startNode.GScore = 0;
             openSet.Add(startNode);
             while(openSet.Count > 0)
             {
@@ -251,7 +252,7 @@ namespace generic_astar
     {
         static void Main(string[] args)
         {
-            NavMap map = new NavMap();
+            /*NavMap map = new NavMap();
             NavNode a = new NavNode(new Point(0, 0));
             NavNode b = new NavNode(new Point(3, 4));
             NavNode c = new NavNode(new Point(0, 4));
@@ -268,26 +269,33 @@ namespace generic_astar
             d.Edges.Add(e, 2);
             f.Edges.Add(g, 2);
             g.Edges.Add(c, 5);
-
+            */
             AStarEngine engine = new AStarEngine();
+            /*
             IEnumerable<NavNode> plan = engine.FindSolution(a, e, map).Select(x => ((NavNode)x));
             foreach(NavNode navNode in plan)
             {
                 Console.Out.WriteLine("({0}, {1})", navNode.Position.X, navNode.Position.Y);
             }
-            
+            */
 
             GOAPMap goapMap = new GOAPMap();
             Action buildFire = new Action("build_fire", new List<WorldStateToken>() { new WorldStateToken("has_wood", true) }, new List<WorldStateToken>() { new WorldStateToken("has_fire", true) }, 10);
             Action cookFood = new Action("cook_food", new List<WorldStateToken>() { new WorldStateToken("has_fire", true), new WorldStateToken("has_raw_food", true) }, new List<WorldStateToken>() { new WorldStateToken("has_cooked_food", true) }, 10);
-            Action huntFood = new Action("hunt_food", new List<WorldStateToken>() { }, new List<WorldStateToken> {new WorldStateToken("has_raw_food", true) }, 10);
+            Action huntFood = new Action("hunt_food", new List<WorldStateToken>() { new WorldStateToken("has_weapon", true) }, new List<WorldStateToken> {new WorldStateToken("has_raw_food", true) }, 10);
             Action chopWood = new Action("chop_wood", new List<WorldStateToken>() { }, new List<WorldStateToken> { new WorldStateToken("has_wood", true) }, 10);
+            Action getWeapon = new Action("get_weapon", new List<WorldStateToken>() { }, new List<WorldStateToken> { new WorldStateToken("has_weapon", true) }, 10);
             goapMap.AddAction(buildFire);
             goapMap.AddAction(cookFood);
             goapMap.AddAction(huntFood);
             goapMap.AddAction(chopWood);
+            goapMap.AddAction(getWeapon);
             GOAPNode start = new GOAPNode(new WorldState(), null);
-            
+            start.WorldState.SetToken("has_wood", false);
+            start.WorldState.SetToken("has_raw_food", false);
+            start.WorldState.SetToken("has_wood", false);
+            start.WorldState.SetToken("has_cooked_food", false);
+            start.WorldState.SetToken("has_weapon", false);
             WorldState goalWorldState = new WorldState();
             goalWorldState.SetToken("has_cooked_food", true);
             GOAPNode goal = new GOAPNode(goalWorldState, null);

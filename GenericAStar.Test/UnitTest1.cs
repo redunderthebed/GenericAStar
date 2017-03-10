@@ -19,9 +19,21 @@ namespace GenericAStar.Test
             goalTokens = new List<WorldStateToken> { new WorldStateToken("b", true), new WorldStateToken("c", false), new WorldStateToken("d", true) };
         }
 
-        public void ShouldBeSameStateAsSelf()
+        [TestMethod]
+        public void ShouldHaveSameTokensAsClone()
         {
-
+            WorldState ws = new WorldState();
+            foreach (WorldStateToken token in tokens)
+            {
+                ws.SetToken(token);
+            }
+            generic_astar.Action action = new generic_astar.Action("test_action", new List<WorldStateToken>() { }, new List<WorldStateToken>() { }, 10);
+            GOAPNode node = new GOAPNode(ws, action);
+            GOAPNode clone = (GOAPNode)node.Clone();
+            foreach (WorldStateToken token in tokens)
+            {
+                Assert.AreEqual(token.Value, clone.WorldState.GetValue(token.Name));
+            }
         }
 
     }
