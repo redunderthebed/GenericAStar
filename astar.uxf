@@ -28,7 +28,7 @@ fontsize=10
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
+      <x>430</x>
       <y>0</y>
       <w>190</w>
       <h>160</h>
@@ -49,7 +49,7 @@ fontsize=10
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>460</x>
+      <x>700</x>
       <y>50</y>
       <w>260</w>
       <h>110</h>
@@ -66,7 +66,7 @@ fontsize=10
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>300</x>
+      <x>540</x>
       <y>340</y>
       <w>220</w>
       <h>70</h>
@@ -80,7 +80,7 @@ getHeuristic(node)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
+      <x>720</x>
       <y>490</y>
       <w>140</w>
       <h>70</h>
@@ -93,20 +93,22 @@ getHeuristic(node)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>340</x>
-      <y>520</y>
+      <x>600</x>
+      <y>660</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>GOAPMap
 --
-+Actions</panel_attributes>
++Actions
+--
+AddAction(Action)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>500</x>
+      <x>740</x>
       <y>220</y>
       <w>150</w>
       <h>80</h>
@@ -123,7 +125,7 @@ getHeuristic(node)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
+      <x>820</x>
       <y>290</y>
       <w>40</w>
       <h>220</h>
@@ -137,7 +139,7 @@ m2=1
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>370</x>
+      <x>610</x>
       <y>80</y>
       <w>110</w>
       <h>40</h>
@@ -151,7 +153,7 @@ m2=1
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>230</x>
+      <x>470</x>
       <y>150</y>
       <w>30</w>
       <h>100</h>
@@ -165,20 +167,21 @@ m2=1
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
+      <x>430</x>
       <y>230</y>
       <w>130</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>IAStarState
 --
-EqualState(other)</panel_attributes>
+EqualState(other)
+Clone() : object</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
+      <x>720</x>
       <y>400</y>
       <w>100</w>
       <h>110</h>
@@ -189,18 +192,18 @@ EqualState(other)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>390</x>
+      <x>660</x>
       <y>400</y>
       <w>30</w>
-      <h>140</h>
+      <h>280</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;260.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>310</x>
+      <x>550</x>
       <y>250</y>
       <w>210</w>
       <h>30</h>
@@ -211,22 +214,23 @@ EqualState(other)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>200</x>
-      <y>440</y>
+      <x>470</x>
+      <y>500</y>
       <w>130</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>Action
 --
-+Requirements
-+Effects</panel_attributes>
++Precondition
++Effect
++Cost</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>440</y>
+      <x>210</x>
+      <y>500</y>
       <w>150</w>
       <h>80</h>
     </coordinates>
@@ -242,102 +246,116 @@ EqualState(other)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>70</x>
+      <x>260</x>
       <y>250</y>
-      <w>140</w>
-      <h>210</h>
+      <w>190</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>120.0;10.0;10.0;10.0;10.0;190.0</additional_attributes>
+    <additional_attributes>170.0;10.0;10.0;10.0;10.0;250.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>320</x>
-      <y>440</y>
-      <w>70</w>
-      <h>100</h>
+      <x>590</x>
+      <y>520</y>
+      <w>60</w>
+      <h>160</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1..*
 m2=1
 </panel_attributes>
-    <additional_attributes>10.0;20.0;50.0;20.0;50.0;80.0</additional_attributes>
+    <additional_attributes>10.0;20.0;40.0;20.0;40.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>160</x>
-      <y>460</y>
-      <w>60</w>
+      <x>350</x>
+      <y>520</y>
+      <w>140</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
 m2=1
 </panel_attributes>
-    <additional_attributes>10.0;20.0;40.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>100</x>
-      <y>570</y>
-      <w>270</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=0..*
-m2=1
-</panel_attributes>
-    <additional_attributes>10.0;90.0;10.0;110.0;250.0;110.0;250.0;10.0</additional_attributes>
+    <additional_attributes>10.0;20.0;100.0;20.0;120.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>50</x>
-      <y>580</y>
-      <w>100</w>
-      <h>80</h>
+      <x>210</x>
+      <y>670</y>
+      <w>180</w>
+      <h>100</h>
     </coordinates>
     <panel_attributes>WorldState
 --
-+Facts
++Tokens
+--
+SatisfiedBy(WorldState) : bool
+SetToken(name, value)
+GetValue(name) : bool
+DifferenceFrom(WorldState) : float
 </panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>10</x>
-      <y>430</y>
-      <w>460</w>
-      <h>270</h>
-    </coordinates>
-    <panel_attributes>lt=.
-bg=gray
-
-
-
-
-
-
-Not implemented yet
-layer=-1</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>80</x>
-      <y>510</y>
+      <x>230</x>
+      <y>570</y>
       <w>30</w>
-      <h>90</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
 m2=1
 </panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>660</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>WorldStateToken
+--
++Name
++Value
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>530</x>
+      <y>560</y>
+      <w>30</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=-
+
+</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>380</x>
+      <y>690</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=1
+</panel_attributes>
+    <additional_attributes>10.0;20.0;90.0;20.0</additional_attributes>
   </element>
 </diagram>

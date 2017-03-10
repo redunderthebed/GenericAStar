@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace generic_astar
     /**
        Connects AStar nodes to states
     */
-    abstract class AStarMap
+    public abstract class AStarMap
     {
         public abstract IEnumerable<AStarNode> GetNeighbours(AStarNode node);
         public abstract float GetHeuristic(AStarNode node);
@@ -49,9 +50,10 @@ namespace generic_astar
     /**
         Empty interface for nav/planning state object.
     */
-    interface IAStarState
+    public interface IAStarState : ICloneable
     {
-        bool Equals(IAStarState other);
+        bool EqualState(IAStarState other);
+        
     }
 
     /**
@@ -72,7 +74,7 @@ namespace generic_astar
         /**
             Checks if two State objects represent the same state
         **/
-        public bool Equals(IAStarState other)
+        public bool EqualState(IAStarState other)
         {
             
             if(other is NavNode)
@@ -88,6 +90,11 @@ namespace generic_astar
         public override int GetHashCode()
         {
             return (int)(Position.X + Position.Y);
+        }
+
+        public object Clone()
+        {
+            return new NavNode(new Point(this.Position.X, this.Position.Y));
         }
     }
 
@@ -148,15 +155,17 @@ namespace generic_astar
 
         public IEnumerable <IAStarState> FindSolution(IAStarState start, IAStarState goal, AStarMap map)
         {
+            //It should add to the goal state the preconditions of the action
             closedSet.Clear();
             openSet.Clear();
             AStarNode startNode = new AStarNode(start, goal, 0, map);
+            startNode.Goal = goal;
             openSet.Add(startNode);
             while(openSet.Count > 0)
             {
                 AStarNode current = openSet.First();
                 openSet.Remove(current);
-                if (current.Value.Equals(goal))
+                if (current.Value.EqualState(current.Goal))
                 {
                     return reconstructPath(current);
                 }
@@ -186,7 +195,7 @@ namespace generic_astar
 
     }
 
-    class AStarNode
+    public class AStarNode
     {
         public float Cost { get; set; } //Cost of action for this node
         public float Heuristic { get; set; } //Distance of this state to goal
@@ -232,6 +241,12 @@ namespace generic_astar
         }
     }
 
+    
+
+    
+
+    
+
     class Program
     {
         static void Main(string[] args)
@@ -259,6 +274,38 @@ namespace generic_astar
             foreach(NavNode navNode in plan)
             {
                 Console.Out.WriteLine("({0}, {1})", navNode.Position.X, navNode.Position.Y);
+            }
+            
+
+            GOAPMap goapMap = new GOAPMap();
+            Action buildFire = new Action("build_fire", new List<WorldStateToken>() { new WorldStateToken("has_wood", true) }, new List<WorldStateToken>() { new WorldStateToken("has_fire", true) }, 10);
+            Action cookFood = new Action("cook_food", new List<WorldStateToken>() { new WorldStateToken("has_fire", true), new WorldStateToken("has_raw_food", true) }, new List<WorldStateToken>() { new WorldStateToken("has_cooked_food", true) }, 10);
+            Action huntFood = new Action("hunt_food", new List<WorldStateToken>() { }, new List<WorldStateToken> {new WorldStateToken("has_raw_food", true) }, 10);
+            Action chopWood = new Action("chop_wood", new List<WorldStateToken>() { }, new List<WorldStateToken> { new WorldStateToken("has_wood", true) }, 10);
+            goapMap.AddAction(buildFire);
+            goapMap.AddAction(cookFood);
+            goapMap.AddAction(huntFood);
+            goapMap.AddAction(chopWood);
+            GOAPNode start = new GOAPNode(new WorldState(), null);
+            
+            WorldState goalWorldState = new WorldState();
+            goalWorldState.SetToken("has_cooked_food", true);
+            GOAPNode goal = new GOAPNode(goalWorldState, null);
+
+
+            
+
+            IEnumerable<GOAPNode> actionPlan = engine.FindSolution(start, goal, goapMap).Select(x => ((GOAPNode)x));
+            foreach(GOAPNode node in actionPlan)
+            {
+                if (node.LastAction != null)
+                {
+                    Console.Out.WriteLine(node.LastAction.Name);
+                }
+                else
+                {
+                    Console.Out.WriteLine("no action");
+                }
             }
             Console.ReadKey();
         }
