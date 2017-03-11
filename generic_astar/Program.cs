@@ -75,8 +75,7 @@ namespace generic_astar
             Checks if two State objects represent the same state
         **/
         public bool EqualState(IAStarState other)
-        {
-            
+        {    
             if(other is NavNode)
             {
                 return this.Position.Distance(((NavNode)other).Position) < error;
@@ -90,6 +89,11 @@ namespace generic_astar
         public override int GetHashCode()
         {
             return (int)(Position.X + Position.Y);
+        }
+
+        public override string ToString()
+        {
+            return "(" + Position.X + ", " + Position.Y + ") : " + this.Edges.Count;
         }
 
         public object Clone()
@@ -129,6 +133,18 @@ namespace generic_astar
         }
     }
 
+    class AStarStateComparer : IEqualityComparer<AStarNode>
+    {
+        public bool Equals(AStarNode x, AStarNode y)
+        {
+            return x.Value.EqualState(y.Value);
+        }
+
+        public int GetHashCode(AStarNode obj)
+        {
+            return obj.Value.GetHashCode(); 
+        }
+    }
 
     class AStarEngine
     {
@@ -162,6 +178,7 @@ namespace generic_astar
             startNode.Goal = goal;
             startNode.GScore = 0;
             openSet.Add(startNode);
+            AStarStateComparer comparer = new AStarStateComparer();
             while(openSet.Count > 0)
             {
                 AStarNode current = openSet.First();
@@ -173,12 +190,12 @@ namespace generic_astar
                 closedSet.Add(current);
                 foreach(AStarNode neighbour in map.GetNeighbours(current))
                 {
-                    if (closedSet.Contains(neighbour))
+                    if (closedSet.Contains(neighbour, comparer))
                     {
                         continue;
                     }
                     float tentativeGScore = current.GScore + neighbour.Cost;
-                    if (openSet.Contains(neighbour) == false)
+                    if (openSet.Contains(neighbour, comparer) == false)
                     {
                         openSet.Add(neighbour);
                     }
@@ -224,7 +241,7 @@ namespace generic_astar
                 AStarNode other = ((AStarNode)obj);
                 if(other.Value.GetHashCode() == this.Value.GetHashCode())
                 {
-                    return this.Value.Equals(other);
+                    return this.Value.EqualState(other.Value);
                 }
                 return false;
             }
@@ -252,32 +269,31 @@ namespace generic_astar
     {
         static void Main(string[] args)
         {
-            /*NavMap map = new NavMap();
+            NavMap map = new NavMap();
             NavNode a = new NavNode(new Point(0, 0));
-            NavNode b = new NavNode(new Point(3, 4));
-            NavNode c = new NavNode(new Point(0, 4));
-            NavNode d = new NavNode(new Point(6, 2));
+            NavNode b = new NavNode(new Point(2, 2));
+            NavNode c = new NavNode(new Point(4, 4));
             NavNode e = new NavNode(new Point(6, 4));
-            NavNode f = new NavNode(new Point(2, 1));
-            NavNode g = new NavNode(new Point(3, 2));
+            NavNode f = new NavNode(new Point(6, 0));
+            NavNode g = new NavNode(new Point(6, 6));
+            NavNode h = new NavNode(new Point(3, 0));
 
-            a.Edges.Add(c, 4);
-            a.Edges.Add(f, 3);
-            b.Edges.Add(d, 5);
-            b.Edges.Add(g, 2);
-            c.Edges.Add(b, 3);
-            d.Edges.Add(e, 2);
-            f.Edges.Add(g, 2);
-            g.Edges.Add(c, 5);
-            */
+            a.Edges.Add(b, 3);
+            b.Edges.Add(c, 2.5f);
+            b.Edges.Add(h, 4f);
+            c.Edges.Add(f, 6);
+            f.Edges.Add(g, 7);
+            g.Edges.Add(e, 2);
+            h.Edges.Add(e, 7);
+            
             AStarEngine engine = new AStarEngine();
-            /*
+            
             IEnumerable<NavNode> plan = engine.FindSolution(a, e, map).Select(x => ((NavNode)x));
             foreach(NavNode navNode in plan)
             {
                 Console.Out.WriteLine("({0}, {1})", navNode.Position.X, navNode.Position.Y);
             }
-            */
+            
 
             GOAPMap goapMap = new GOAPMap();
             Action buildFire = new Action("build_fire", new List<WorldStateToken>() { new WorldStateToken("has_wood", true) }, new List<WorldStateToken>() { new WorldStateToken("has_fire", true) }, 10);
@@ -299,9 +315,6 @@ namespace generic_astar
             WorldState goalWorldState = new WorldState();
             goalWorldState.SetToken("has_cooked_food", true);
             GOAPNode goal = new GOAPNode(goalWorldState, null);
-
-
-            
 
             IEnumerable<GOAPNode> actionPlan = engine.FindSolution(start, goal, goapMap).Select(x => ((GOAPNode)x));
             foreach(GOAPNode node in actionPlan)

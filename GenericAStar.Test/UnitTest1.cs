@@ -11,18 +11,24 @@ namespace GenericAStar.Test
     {
         IEnumerable<WorldStateToken> tokens;
         IEnumerable<WorldStateToken> goalTokens;
+        WorldState ws;
 
         [TestInitialize]
         public void Initialize()
         {
             tokens = new List<WorldStateToken> { new WorldStateToken("a", true), new WorldStateToken("b", false), new WorldStateToken("c", true) };
             goalTokens = new List<WorldStateToken> { new WorldStateToken("b", true), new WorldStateToken("c", false), new WorldStateToken("d", true) };
+            ws = new WorldState();
+            foreach (WorldStateToken token in tokens)
+            {
+                ws.SetToken(token);
+            }
         }
 
         [TestMethod]
         public void ShouldHaveSameTokensAsClone()
         {
-            WorldState ws = new WorldState();
+            
             foreach (WorldStateToken token in tokens)
             {
                 ws.SetToken(token);
@@ -34,6 +40,16 @@ namespace GenericAStar.Test
             {
                 Assert.AreEqual(token.Value, clone.WorldState.GetValue(token.Name));
             }
+        }
+
+        [TestMethod]
+        public void ShouldBeIndependentOfClone()
+        {
+            GOAPNode original = new GOAPNode(new WorldState(ws), null);
+            GOAPNode clone = (GOAPNode)original.Clone();
+
+            clone.WorldState.SetToken("a", !(bool)original.WorldState.GetValue("a"));
+            Assert.AreNotEqual(clone.WorldState.GetValue("a"), original.WorldState.GetValue("a"));
         }
 
     }

@@ -127,9 +127,9 @@ namespace generic_astar
             this.Tokens = new Dictionary<string, WorldStateToken>();
             foreach(KeyValuePair<string, WorldStateToken> pair in other.Tokens)
             {
-                this.Tokens.Add(pair.Key, pair.Value);
+                WorldStateToken token = pair.Value;
+                this.Tokens.Add(token.Name, new WorldStateToken(token.Name, token.Value));
             }
-            
         }
 
         public WorldState(Dictionary<string, WorldStateToken> tokens)
