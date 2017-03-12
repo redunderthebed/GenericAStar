@@ -62,11 +62,19 @@ namespace generic_astar
                     return true;
                 }
             });
-
+            
             //Find actions to satisfy them
             foreach (WorldStateToken token in unsatisfied)
             {
-                IEnumerable<Action> actions = effectActions[token.Name][token.Value];
+                IEnumerable<Action> actions = null;
+                try
+                {
+                    actions = effectActions[token.Name][token.Value];
+                }
+                catch (KeyNotFoundException keyNotFound)
+                {
+                    break;
+                }
                 foreach (Action action in actions)
                 {
                     //Modify current and goal states to include the action
@@ -100,11 +108,11 @@ namespace generic_astar
             this.LastAction = lastAction;
         }
 
-        public bool EqualState(IAStarState other)
+        public bool SatisfiedBy(IAStarState other)
         {
             if (other is GOAPNode)
             {
-                return ((GOAPNode)other).WorldState.SatisiedBy(WorldState);
+                return ((GOAPNode)other).WorldState.SatisfiedBy(WorldState);
             }
             else
             {
@@ -115,6 +123,18 @@ namespace generic_astar
         public object Clone()
         {
             return new GOAPNode(new WorldState(this.WorldState), LastAction);
+        }
+
+        public bool EqualState(IAStarState other)
+        {
+            if (other is GOAPNode)
+            {
+                return ((GOAPNode)other).WorldState.Equals(WorldState);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -162,7 +182,7 @@ namespace generic_astar
             return Tokens.Select(x => x.Value).GetEnumerator();
         }
 
-        public bool SatisiedBy(WorldState other)
+        public bool SatisfiedBy(WorldState other)
         {
             try
             {
@@ -214,7 +234,34 @@ namespace generic_astar
 
         public override string ToString()
         {
-            return "{ " + String.Join(", ", Tokens.Select(x => x.ToString())) + "}";   
+            return "{ " + String.Join(", ", Tokens.Select(x => x.Value)) + "}";   
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is WorldState)
+            {
+                WorldState other = (WorldState)obj;
+                if (other.Count() != this.Count())
+                {
+                    return false;
+                }
+                return other.All(x =>
+                {
+                    object val = this.GetValue(x.Name);
+                    if (val != null)
+                    {
+                        return x.Value == (bool)val;
+                    }
+                    else {
+                        return false;
+                    }
+                });
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -239,6 +286,10 @@ namespace generic_astar
             }
             this.Name = name;
             this.Cost = cost;
+        }
+        public override string ToString()
+        {
+            return Name + ": " + Cost;
         }
     }
 

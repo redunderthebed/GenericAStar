@@ -11,7 +11,7 @@ namespace generic_astar
     /**
         Simple point class for demo purposes, obviously could be swapped out with Unity vectors
     */
-    class Point
+    public class Point
     {
         public float X { get; }
         public float Y { get; }
@@ -39,7 +39,7 @@ namespace generic_astar
     /**
         Compares two AStarNodes by their FScore
     */
-    class FScoreComparer : IComparer<AStarNode>
+    public class FScoreComparer : IComparer<AStarNode>
     {
         public int Compare(AStarNode x, AStarNode y)
         {
@@ -53,13 +53,13 @@ namespace generic_astar
     public interface IAStarState : ICloneable
     {
         bool EqualState(IAStarState other);
-        
+        bool SatisfiedBy(IAStarState other);
     }
 
     /**
         Translates between nav mesh and AStarEngine
     */
-    class NavNode : IAStarState
+    public class NavNode : IAStarState
     {
         static float error = 0.03f;
         public Point Position;
@@ -86,6 +86,11 @@ namespace generic_astar
             }
         }
 
+        public bool SatisfiedBy(IAStarState other)
+        {
+            return this.EqualState(other);
+        }
+
         public override int GetHashCode()
         {
             return (int)(Position.X + Position.Y);
@@ -102,7 +107,7 @@ namespace generic_astar
         }
     }
 
-    class NavMap : AStarMap
+    public class NavMap : AStarMap
     {
         public List<NavNode> Nodes;
 
@@ -137,7 +142,7 @@ namespace generic_astar
     {
         public bool Equals(AStarNode x, AStarNode y)
         {
-            return x.Value.EqualState(y.Value);
+            return x.Value.EqualState(y.Value) && x.Goal.EqualState(y.Goal);
         }
 
         public int GetHashCode(AStarNode obj)
@@ -148,13 +153,15 @@ namespace generic_astar
 
     class AStarEngine
     {
-        SortedSet<AStarNode> openSet;
+        List<AStarNode> openSet;
         HashSet<AStarNode> closedSet;
+        
 
         public AStarEngine()
         {
-            openSet = new SortedSet<AStarNode>(new FScoreComparer());
+            openSet = new List<AStarNode>();
             closedSet = new HashSet<AStarNode>();
+            
         }
 
         private IEnumerable <IAStarState> reconstructPath(AStarNode goal)
@@ -179,11 +186,13 @@ namespace generic_astar
             startNode.GScore = 0;
             openSet.Add(startNode);
             AStarStateComparer comparer = new AStarStateComparer();
-            while(openSet.Count > 0)
+            FScoreComparer fscoreComparer = new FScoreComparer();
+            while (openSet.Count > 0)
             {
+                openSet.Sort(fscoreComparer);
                 AStarNode current = openSet.First();
                 openSet.Remove(current);
-                if (current.Value.EqualState(current.Goal))
+                if (current.Value.SatisfiedBy(current.Goal))
                 {
                     return reconstructPath(current);
                 }
@@ -301,23 +310,42 @@ namespace generic_astar
             Action huntFood = new Action("hunt_food", new List<WorldStateToken>() { new WorldStateToken("has_weapon", true) }, new List<WorldStateToken> {new WorldStateToken("has_raw_food", true) }, 10);
             Action chopWood = new Action("chop_wood", new List<WorldStateToken>() { }, new List<WorldStateToken> { new WorldStateToken("has_wood", true) }, 10);
             Action getWeapon = new Action("get_weapon", new List<WorldStateToken>() { }, new List<WorldStateToken> { new WorldStateToken("has_weapon", true) }, 10);
+            Action buyCrisps = new Action("buy_crisps", new List<WorldStateToken>() { new WorldStateToken("has_money", true) }, new List<WorldStateToken> { new WorldStateToken("has_cooked_food", true) }, 20);
             goapMap.AddAction(buildFire);
             goapMap.AddAction(cookFood);
             goapMap.AddAction(huntFood);
             goapMap.AddAction(chopWood);
             goapMap.AddAction(getWeapon);
+            
             GOAPNode start = new GOAPNode(new WorldState(), null);
-            start.WorldState.SetToken("has_wood", false);
-            start.WorldState.SetToken("has_raw_food", false);
-            start.WorldState.SetToken("has_wood", false);
-            start.WorldState.SetToken("has_cooked_food", false);
-            start.WorldState.SetToken("has_weapon", false);
             WorldState goalWorldState = new WorldState();
             goalWorldState.SetToken("has_cooked_food", true);
             GOAPNode goal = new GOAPNode(goalWorldState, null);
-
             IEnumerable<GOAPNode> actionPlan = engine.FindSolution(start, goal, goapMap).Select(x => ((GOAPNode)x));
-            foreach(GOAPNode node in actionPlan)
+            printPlan(actionPlan);
+
+            Console.Out.WriteLine("\nAdd easy option\n");
+            goapMap.AddAction(buyCrisps);
+
+            Console.Out.WriteLine("Replanning\n");
+            actionPlan = engine.FindSolution(start, goal, goapMap).Select(x => ((GOAPNode)x));
+
+            printPlan(actionPlan);
+
+            start.WorldState.SetToken("has_money", true);
+
+            Console.Out.WriteLine("\nSetting precondition and Replanning\n");
+            actionPlan = engine.FindSolution(start, goal, goapMap).Select(x => ((GOAPNode)x));
+
+            printPlan(actionPlan);
+
+            Console.ReadKey();
+        }
+
+        private static void printPlan(IEnumerable<GOAPNode> actionPlan)
+        {
+            
+            foreach (GOAPNode node in actionPlan)
             {
                 if (node.LastAction != null)
                 {
@@ -328,7 +356,6 @@ namespace generic_astar
                     Console.Out.WriteLine("no action");
                 }
             }
-            Console.ReadKey();
         }
     }
 }
